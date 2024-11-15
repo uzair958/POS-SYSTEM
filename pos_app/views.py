@@ -13,8 +13,7 @@ from django.contrib.auth import authenticate, login
 from django.urls import reverse
 from .models import Employees
 from django.utils import timezone
-
-
+from django.db.models import F, Sum
 
 
 def custom_logout_view(request):
@@ -89,9 +88,9 @@ def login_view(request):
 
 # @login_required
 def inventory_view(request):
-    if 'employee_id' not in request.session:
-        # Redirect to login page if not logged in
-        return redirect('login')
+    # if 'employee_id' not in request.session:
+    #     # Redirect to login page if not logged in
+    #     return redirect('login')
     products = Products.objects.filter(status=1)  # Filter to show only available items
     return render(request, 'inventory.html', {'products': products})
 
@@ -187,6 +186,9 @@ def pos_view(request):
 
 # @login_required
 def return_product_view(request):
+    if 'employee_id' not in request.session:
+        # Redirect to login page if not logged in
+        return redirect('login')
     products_info = []  # To store information about each returned product
     error_message = None
 
@@ -248,11 +250,14 @@ def return_product_view(request):
 
 
 # @login_required
-from django.db.models import Sum
 
-from django.db.models import F, Sum
 
 def analysis_dashboard(request):
+
+    if 'employee_id' not in request.session:
+        # Redirect to login page if not logged in
+        return redirect('login')
+    
     # 1. Top 5 Products Sold by Quantity (considering the returns)
     top_products_sold = (
         salesItems.objects.values('product_id__name')
