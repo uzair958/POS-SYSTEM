@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Application{% endblock %}</title>
+    {% block head %}{% endblock %}
+    <style>
+        /* Base Styles */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            padding-top: 60px; /* Space for the fixed navbar */
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            position: fixed;
+            top: 5px;
+            left: 0;
+            width: 100%;
+            background-color: #2980b9;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            z-index: 1000;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 5px 5px 5px 5px;
+        }
+
+        .navbar .navbar-brand {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        .navbar .navbar-menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar .navbar-menu .nav-item {
+            padding: 8px 12px;
+            border-radius: 5px;
+            position: relative;
+            left: -100px;
+        }
+
+        .navbar .navbar-menu .nav-item a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            
+        }
+
+        .navbar .navbar-menu .nav-item:hover {
+            background-color: #90caf9;
+        }
+
+        /* Logout Button Styling */
+        .navbar .nav-item.logout {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .navbar .nav-item.logout:hover {
+            background-color: #c0392b;
+        }
+
+        /* Hamburger Menu (hidden by default) */
+        .hamburger {
+            display: none;
+            font-size: 1.5em;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 905px) {
+            .navbar .navbar-menu {
+                display: none;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                background-color: #2980b9;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                padding: 10px 0;
+                height: auto;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            }
+            .navbar .navbar-menu .nav-item {
+                position: relative;
+                left: -9px;
+            }
+            .navbar .navbar-menu.show {
+                display: flex;
+            }
+            .navbar{
+                height: 60px;
+            }
+
+            .hamburger {
+                display: block;
+                margin-bottom: 15px;
+                margin-right: 20px;
+            }
+            
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <a class="navbar-brand" href="/">POS SYSTEM</a>
+        <button class="hamburger" id="hamburger">☰</button>
+        <div class="navbar-menu" id="nav-menu">
+            <div class="nav-item"><a href="{% url 'inventory' %}">Inventory</a></div>
+            <div class="nav-item"><a href="{% url 'pos' %}">POS</a></div>
+            <div class="nav-item"><a href="{% url 'return_product' %}">Return Product</a></div>
+            <div class="nav-item"><a href="{% url 'analysis_dashboard' %}">Dashboard</a></div>
+
+            <!-- Dynamic Login/Logout -->
+            {% if request.session.employee_id %}
+                <div class="nav-item logout"><a href="{% url 'logout' %}">Logout</a></div>
+            {% else %}
+                <div class="nav-item"><a href="{% url 'login' %}">Login</a></div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- JavaScript for Toggle -->
+    <script>
+        const hamburger = document.getElementById('hamburger');
+        const navMenu = document.getElementById('nav-menu');
+
+        hamburger.addEventListener('click', () => {
+            navMenu.classList.toggle('show');
+        });
+    </script>
+</body>
+</html>
